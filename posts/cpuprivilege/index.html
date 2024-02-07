@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.38ccdf5c998a71d2ad889faefccbe9132577d265b25e73d94a1be540ebcaaa18.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/images/thicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">TechieHustle - CPUPrivilege</title>
+<meta property="og:title" content=TechieHustle&#32;-&#32;CPUPrivilege />
+<meta name="twitter:title" content=TechieHustle&#32;-&#32;CPUPrivilege />
+<meta itemprop="name" content=TechieHustle&#32;-&#32;CPUPrivilege />
+<meta name="application-name" content=TechieHustle&#32;-&#32;CPUPrivilege />
+<meta property="og:site_name" content="TechieHustle" />
+
+
+<meta name="description" content="CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor." />
+<meta itemprop="description" content="CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor." />
+<meta property="og:description" content="CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor." />
+<meta name="twitter:description" content="CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor." />
+
+
+<base href="https://techiehustle-blog.github.io/posts/cpuprivilege/" />
+<link rel="canonical" href="https://techiehustle-blog.github.io/posts/cpuprivilege/" itemprop="url" />
+<meta name="url" content="https://techiehustle-blog.github.io/posts/cpuprivilege/" />
+<meta name="twitter:url" content="https://techiehustle-blog.github.io/posts/cpuprivilege/" />
+<meta property="og:url" content="https://techiehustle-blog.github.io/posts/cpuprivilege/" />
+
+
+<meta property="og:updated_time" content=4001-04-11T141:13:22&#43;0530 />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='https://techiehustle-blog.github.io/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+<meta name="twitter:site" content="" />
+<meta name="twitter:creator" content="" />
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="TechieHustle" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+
+
+<meta property="og:type" content="article" />
+<meta property="article:publisher" content="" />
+<meta property="og:article:published_time" content=4001-04-11T141:13:22&#43;0530 />
+<meta property="article:published_time" content=4001-04-11T141:13:22&#43;0530 />
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.3bfd04772e06f4be6e4ebd77697fda16a541f93fca95beb8b0e106b343ed6efb.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="dark-theme">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="https://techiehustle-blog.github.io/">
+                <img src="/images/avatar.jpg" alt="brand image">
+            </a>
+        
+        
+            <a href="https://techiehustle-blog.github.io/">
+                <h1>TechieHustle</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    Hi, I'm Anurag Chandra! This blog is all about different computer technologies and ideas.
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+            
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                        <li class="sub-heading">
+                            Recent
+                        </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/cpuprivilege/">CPUPrivilege</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/parallel_processing/">Parallel Processing to Reduce Processing Time</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/ecs_fargate_log_routing/">Log Routing in ECS Fargate Tasks</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/web_monitor/">Website Monitoring</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/ecs_task_tacking/">Tracking Failed ECS Tasks</a>
+                            </li>
+                        
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/TechieHustle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/anurag-c/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto://techiehustle.dev@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2024 TechieHustle. All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="https://techiehustle-blog.github.io/posts/cpuprivilege/">CPUPrivilege</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      <time datetime=" 2022-01-04T23:41:13&#43;0530" class="post-date">
+        January 4, 2022
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>4 mins read</span>
+      </span>
+    </div>
+
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <h3 id="prologue">Prologue</h3>
+<p>It&rsquo;s a fundamental concept and design rule that all the CPU resources should not be accessible/programmable by any random process or function in a machine. This is crucial for data protection and avoiding functionality impairment and improving fault tolerance of a CPU. This protection is enforced by a mechanism called as <a href="https://www.geeksforgeeks.org/protection-ring/" target="_blank">protection ring</a> with different level of access provided to different rings. More popularly though, the protection rings are referred as CPU privilege levels.</p>
+<p>At software level, there can be multiple privilege levels which can be created and enforced to be used with an application or process using the mechanisms like Discretionary Access Control (DAC) in standard Linux or Mandatory Access Control (MAC) in Security Enhanced Linux (<a href="https://wiki.centos.org/HowTos/SELinux" target="_blank">SELinux</a>). However, at the processor (our discussion is around x86_64 processor) level, there are only two levels (also called modes): Supervisor (Kernel) mode (ring 0 in x86 documentation); and User mode(ring 3 in x86 documentation). The OS code runs in ring 0 in kernel mode has the highest level of privilege while all the applications and processes run in ring 3, user mode.</p>
+<blockquote>
+<p>NOTE: Originally, x86 processors have four rings (ring 0 through ring 3), as per the <a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html" target="_blank">Intel® 64 and IA-32 Architectures Software Developer Manuals</a>. But most systems use only two of them. Ring 1 and 2 were intended to be used by device drivers, but modern Operating Systems run them in ring 0. Ring 1 and 2 are still used, for example type 2 hypervisors like VirtualBox and VMware Fusion put guest OS in ring 1.</p>
+</blockquote>
+<p>We will be testing privilege level of a code in C language which includes inline assembly language to see what registers it can read and write.</p>
+<h3 id="inline-assembly-language-in-c">Inline Assembly language in C</h3>
+<p>Inline assembly language can be embedded in a C code using the <a href="https://gcc.gnu.org/onlinedocs/gcc/Using-Assembly-Language-with-C.html" target="_blank">asm</a> keyword. GNU assembler uses AT&amp;T Assembly syntax which can be referred quickly <a href="https://csiflabs.cs.ucdavis.edu/~ssdavis/50/att-syntax.htm" target="_blank">here</a>.</p>
+<p>Few important sytatctial notes that will be used in this post:</p>
+<ul>
+<li>
+<p>Register names prefixed by a &lsquo;%&rsquo; sign, eg. %al,%bx, %ds, %cr0 etc. <code>mov	%ax, %bx</code> &gt; mov instruction moves the value from the 16-bit register AX to 16-bit register BX.</p>
+</li>
+<li>
+<p>Literal values prefixed by a &lsquo;$&rsquo; sign. <code>mov	$100, %bx</code> &gt; moves the value 100 into the register AX.</p>
+</li>
+<li>
+<p><code>mov	$A,	%al</code> &gt; moves the numerical value of the ascii A into the AL register.</p>
+</li>
+<li>
+<p>The <code>mov</code> instruction can be suffixed with (b, w, l, or q) indicating how many bytes are being copied (1, 2, 4, or 8 respectively).</p>
+</li>
+</ul>
+<p>Now, it&rsquo;s time to get our hands dirty with an actual code in C. We are going to start with an exteremely basic assembly embedded in C to copy a variable into another, increment, and print:</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>)
+{
+    <span style="color:#66d9ef">int</span> src <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span>;
+    <span style="color:#66d9ef">int</span> dst;
+
+    <span style="color:#66d9ef">asm</span> (<span style="color:#e6db74">&#34;mov %0, %1</span><span style="color:#ae81ff">\n\t</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#e6db74">&#34;add $1, %1&#34;</span>
+        <span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;=r&#34;</span> (dst)
+        <span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;r&#34;</span> (src));
+
+    printf(<span style="color:#e6db74">&#34;%d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, dst);
+    exit(<span style="color:#ae81ff">0</span>);
+}
+</code></pre></div><p>It will print &ldquo;10&rdquo; in the output.</p>
+<p>Let&rsquo;s try to access some registers on the processor.n</p>
+<pre tabindex="0"><code class="language-c{.line-numbers}" data-lang="c{.line-numbers}">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+
+typedef unsigned long u64;
+
+static u64 getRcx(void)
+{
+    /** Note: [RAX] register in x86 processors contains a function return
+     value, so we can query a register's value by moving its value into RAX.
+    * */
+    __asm__ __volatile__(
+            &quot;push %rcx\n\t&quot; 
+            &quot;movq $5, %rcx\n\t&quot; 
+            &quot;movq %rcx, %rax&quot;); 
+    __asm__ __volatile__(&quot;pop %rcx&quot;);
+}
+
+int main(void)
+{
+    printf(&quot;Inline assembly with register value:\n [RCX] = 0x%lx\n&quot;,  
+                getRcx());
+    exit(0);
+}
+</code></pre><p>It prints 0x5, as the expected output. So, the C program execution can read the values of RCS as well as RAX (well, program returned value is stored in RAX so it should be accessible).</p>
+<p>We will now try to play with control registers. Contorl registers perform fundamental operations like interrput control and addressing mode et al. A detailed reading on specific functions can be found <a href="https://en.wikipedia.org/wiki/Control_register#CR0" target="_blank">here</a>. Here, we are going to try reading the CR0 control register. CR0 register has control flags which determines the basic processor opearations; toggling the bits enables/disables paging, cache and protected mode, among others.</p>
+<pre tabindex="0"><code class="language-c{.line-numbers}" data-lang="c{.line-numbers}">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+
+typedef unsigned long u64;
+
+static u64 getRcx(void)
+{
+    __asm__ __volatile__(&quot;movq %cr0, %rax&quot;);
+}
+
+int main(void)
+{
+    printf(&quot;Inline assembly with register value:\n [RCX] = 0x%lx\n&quot;,  
+                getRcx());
+    exit(0);
+}
+</code></pre><p>Out of the above code execution:</p>
+<p><code>Segmentation fault (core dumped)</code></p>
+<p>Here, the application code - which is essentially at application level (user mode) — tried to access a control register. As we discussed earlier, control registers control fundamental functionalities of the processor - operating modes and states of the processor. A nasty application could easily impair the processor functionality. So, none of these registers can be accessed only in kernel mode of operation, which is OS. It now makes sense why need different privilege levels.</p>
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="https://techiehustle-blog.github.io/posts/parallel_processing/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Parallel Processing to Reduce Processing Time</a>
+        
+	    
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#prologue">Prologue</a></li>
+        <li><a href="#inline-assembly-language-in-c">Inline Assembly language in C</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>

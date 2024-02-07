@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.38ccdf5c998a71d2ad889faefccbe9132577d265b25e73d94a1be540ebcaaa18.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/images/thicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">TechieHustle - Parallel Processing to Reduce Processing Time</title>
+<meta property="og:title" content=TechieHustle&#32;-&#32;Parallel&#32;Processing&#32;to&#32;Reduce&#32;Processing&#32;Time />
+<meta name="twitter:title" content=TechieHustle&#32;-&#32;Parallel&#32;Processing&#32;to&#32;Reduce&#32;Processing&#32;Time />
+<meta itemprop="name" content=TechieHustle&#32;-&#32;Parallel&#32;Processing&#32;to&#32;Reduce&#32;Processing&#32;Time />
+<meta name="application-name" content=TechieHustle&#32;-&#32;Parallel&#32;Processing&#32;to&#32;Reduce&#32;Processing&#32;Time />
+<meta property="og:site_name" content="TechieHustle" />
+
+
+<meta name="description" content="Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples." />
+<meta itemprop="description" content="Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples." />
+<meta property="og:description" content="Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples." />
+<meta name="twitter:description" content="Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples." />
+
+
+<base href="https://techiehustle-blog.github.io/posts/parallel_processing/" />
+<link rel="canonical" href="https://techiehustle-blog.github.io/posts/parallel_processing/" itemprop="url" />
+<meta name="url" content="https://techiehustle-blog.github.io/posts/parallel_processing/" />
+<meta name="twitter:url" content="https://techiehustle-blog.github.io/posts/parallel_processing/" />
+<meta property="og:url" content="https://techiehustle-blog.github.io/posts/parallel_processing/" />
+
+
+<meta property="og:updated_time" content=23009-23-10T93:58:21&#43;0530 />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='https://techiehustle-blog.github.io/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+<meta name="twitter:site" content="" />
+<meta name="twitter:creator" content="" />
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="TechieHustle" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+
+
+<meta property="og:type" content="article" />
+<meta property="article:publisher" content="" />
+<meta property="og:article:published_time" content=23009-23-10T93:58:21&#43;0530 />
+<meta property="article:published_time" content=23009-23-10T93:58:21&#43;0530 />
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.3bfd04772e06f4be6e4ebd77697fda16a541f93fca95beb8b0e106b343ed6efb.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="dark-theme">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="https://techiehustle-blog.github.io/">
+                <img src="/images/avatar.jpg" alt="brand image">
+            </a>
+        
+        
+            <a href="https://techiehustle-blog.github.io/">
+                <h1>TechieHustle</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    Hi, I'm Anurag Chandra! This blog is all about different computer technologies and ideas.
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+            
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                        <li class="sub-heading">
+                            Recent
+                        </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/cpuprivilege/">CPUPrivilege</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/parallel_processing/">Parallel Processing to Reduce Processing Time</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/ecs_fargate_log_routing/">Log Routing in ECS Fargate Tasks</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/web_monitor/">Website Monitoring</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/ecs_task_tacking/">Tracking Failed ECS Tasks</a>
+                            </li>
+                        
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/TechieHustle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/anurag-c/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto://techiehustle.dev@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2024 TechieHustle. All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="https://techiehustle-blog.github.io/posts/parallel_processing/">Parallel Processing to Reduce Processing Time</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      <time datetime=" 2021-09-23T22:03:58&#43;0530" class="post-date">
+        September 23, 2021
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>5 mins read</span>
+      </span>
+    </div>
+
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <h3 id="prologue">Prologue</h3>
+<p>Parallel processing is a computation method in which a large task is broken down into several independent, smaller and usually similar tasks running simultaneously on different processors in the same server which is running the Python script.</p>
+<p>This can significantly reduce the execution time of a program with a very large data set. We are going to have a detailed look into the parallel processing concepts, relevant python methods with examples.</p>
+<p><strong><a href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" target="_blank">multiprocessing</a> module in Python</strong></p>
+<p>In this article, we are going to use <a href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" target="_blank">multiprocessing</a> module. It launches subprocesses instead of threads and have independent memory space. Hence, the subprocesses can be launched on different physical processors (also called as CPU cores, we will be using CPU core and processor interchangeably throughout this article) on a machine, both Unix and Windows.</p>
+<p>Parallel processing can only be exploited well to decrease the execution time if the machine running the script has more than one processors. It is noteworthy that using subprocesses brings in its own overhead. And creating subprocesses on a single processor machine actually increases the total execution time compared to sans subprocesses execution.</p>
+<h3 id="number-of-processors-on-a-machine">Number of processors on a Machine</h3>
+<p>Naturally, the follow-up question comes: How do I find the number of processors on my machine?</p>
+<p>The answer will vary on the machine type under concern. We are discussing each type in this section.</p>
+<ul>
+<li>Linux Machines: Terminal can be used to run nproc utility which will return the CPU core count. Detailed information about each core can be found by firing command cat /proc/cpuinfo in terminal.</li>
+<li>Apple Mac: In this case, the CPU cores can be found in System Report. Navigate as:
+Apple Icon Menu &gt; About This Mac &gt; System Report &gt; Hardware. The number of cores can be found against “Total Number of Cores”</li>
+<li>Windows Machine: There are multiple ways of finding CPU core count in Windows. We are discussing two major ways.
+<ul>
+<li>Task manager: Task manager &gt; Performance &gt; The number of cores can be found against the “Cores” option below the performance graph.</li>
+<li>Note that if Windows machine is running as a server in cloud or a virtual machine, then the cores should be found against “Virtual processors”.</li>
+</ul>
+</li>
+<li>Any machine with python installed: <code>multiprocessing</code> module provides a method <a href="https://docs.python.org/3/library/os.html#os.cpu_count" target="_blank"><code>microprocessing.cpu_count()</code></a> to return the CPU processor count. So the following command can be used in a terminal <code>python -c 'import multiprocessing as mp; print(mp.cpu_count())'</code></li>
+</ul>
+<h3 id="getting-hands-dirty">Getting hands dirty</h3>
+<p>Enough of talking, now it’s time to get our hands dirty with examples.</p>
+<p>As discussed earlier we are going to use <code>multiprocessing</code> module. We will leverage the <a href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool" target="_blank">Pool</a> object to create parallel process. The Pool object is used to create a pool of worker processes which can be assigned jobs. The maximum number of worker processes that can be run simultaneously on different cores would be total available cores available on the machine.</p>
+<p>The <a href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool" target="_blank">Pool</a> object has <em>processes</em> as an argument which is essentially the number of worker processes to use. If no value is assigned, it will default to the total number of available cores on the machine.</p>
+<p>Creating parallel processes: Following shows a basic example of creating multiple processes using <code>Pool.map()</code> to find square of numbers.</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> multiprocessing <span style="color:#66d9ef">as</span> mp
+<span style="color:#f92672">import</span> os
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">squareCal</span>(x):
+    print (mp<span style="color:#f92672">.</span>current_process())
+    print (<span style="color:#e6db74">&#34;Process ID: &#34;</span>, os<span style="color:#f92672">.</span>getpid())
+    print (<span style="color:#e6db74">&#34;This string is for intermixing the outputs.&#34;</span>)
+    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">*</span>x
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+    
+    print(<span style="color:#e6db74">&#34;Processor count: &#34;</span>,os<span style="color:#f92672">.</span>cpu_count())
+    
+    <span style="color:#66d9ef">with</span> mp<span style="color:#f92672">.</span>Pool() <span style="color:#66d9ef">as</span> p:
+        print(p<span style="color:#f92672">.</span>map(squareCal, [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>]))
+</code></pre></div><p>Note that in the above example, we have not provided any value in <code>mp.Pool()</code>, so it will default to 4 worker processes pool, as the machine used in example has 4 CPU cores. And the p.map() method assigns the jobs to the worker processes.</p>
+<p>In the output of above code, the process ID and last string in each callback function (squareCal()) of each worker are not printed sequentially. The reason being workers from different CPU cores are using the I/O stream which is mixing the outputs.</p>
+<p><img src="/images/MultiProcesses.png" alt="MultiProcesses"></p>
+<p>So, if we use a single worker process (mp.Pool(1)), in that case, each execution of the above snippet will result in perfect ordered output, as only one worker process can use the I/O stream.</p>
+<p>Now, let’s take an example of finding sum of consecutive integers from 0 to n-1. We need to keep this in consideration that the sum has to be found for a very large value of n, so that the parallelization compensates the small overhead due to parallelization. If n is a small value, it would take lesser time to run it on a single processor as it will avoid the overhead.</p>
+<p>In the following example, we are taking a very large value of n (10⁹).</p>
+<h3 id="sum-without-parallelization">Sum without Parallelization</h3>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> multiprocessing <span style="color:#66d9ef">as</span> mp
+<span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> time
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+    print(<span style="color:#e6db74">&#34;Processor count: &#34;</span>,os<span style="color:#f92672">.</span>cpu_count())
+
+    sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    startTime <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+    <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1000000000</span>:
+        sum <span style="color:#f92672">=</span> sum <span style="color:#f92672">+</span> i
+        i <span style="color:#f92672">=</span> i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+    print(<span style="color:#e6db74">&#34;Sum without parallel processing: &#34;</span>, sum)
+    print(<span style="color:#e6db74">&#34;Time Elapsed without parallel processing: &#34;</span>, (time<span style="color:#f92672">.</span>time() <span style="color:#f92672">-</span> startTime))
+</code></pre></div><p>The above code takes 133+ seconds to find the sum:</p>
+<p><img src="/images/SumSignleProcessing.png" alt="SingleProcessorSum"></p>
+<h3 id="sum-with-parallelization">Sum with Parallelization</h3>
+<p>The following snippet uses all the four cores from machine to find the sum.</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> multiprocessing <span style="color:#66d9ef">as</span> mp
+<span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> time
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">findSum</span>(x):
+    sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    i <span style="color:#f92672">=</span> x
+    <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> (x<span style="color:#f92672">+</span><span style="color:#ae81ff">250000000</span>):
+        sum <span style="color:#f92672">=</span> sum <span style="color:#f92672">+</span> i
+        i <span style="color:#f92672">=</span> i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">return</span> sum
+    
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+    
+    print(<span style="color:#e6db74">&#34;Processor count: &#34;</span>,os<span style="color:#f92672">.</span>cpu_count())
+
+    startTime <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+    <span style="color:#66d9ef">with</span> mp<span style="color:#f92672">.</span>Pool() <span style="color:#66d9ef">as</span> p:
+        sum1, sum2, sum3, sum4 <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>map(findSum, [<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">250000000</span>,<span style="color:#ae81ff">500000000</span>,<span style="color:#ae81ff">750000000</span>])
+    sum <span style="color:#f92672">=</span> sum1 <span style="color:#f92672">+</span> sum2 <span style="color:#f92672">+</span> sum3 <span style="color:#f92672">+</span> sum4
+    print(<span style="color:#e6db74">&#34;Sum with parallel processing: &#34;</span>,sum)
+    print(<span style="color:#e6db74">&#34;Time Elapsed with parallel processing: &#34;</span>, (time<span style="color:#f92672">.</span>time() <span style="color:#f92672">-</span> startTime))
+</code></pre></div><p>The above code with parallelization took little over 56 seconds:</p>
+<p><img src="/images/SumMultiprocessor.png" alt="MultiProcessorSum"></p>
+<h3 id="conclusion">Conclusion</h3>
+<p>The test results clearly show that with parallel processing, it’s taking little over lesser than 56 seconds which is lesser than half the time it takes to find the sum without parallelization (133 seconds). And the difference grows even larger as we go for larger computations.</p>
+<p>So, if you have large data sets which can be computed independently and multicore CPU on machine, parallel processing will be a good idea to decrease the execution time.</p>
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="https://techiehustle-blog.github.io/posts/ecs_fargate_log_routing/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Log Routing in ECS Fargate Tasks</a>
+        
+	    
+            <div class="next-post">
+                <a href="https://techiehustle-blog.github.io/posts/cpuprivilege/?ref=footer"><span style="font-weight:bold;">Next »</span><br>CPUPrivilege</a>
+            </div>
+        
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#prologue">Prologue</a></li>
+        <li><a href="#number-of-processors-on-a-machine">Number of processors on a Machine</a></li>
+        <li><a href="#getting-hands-dirty">Getting hands dirty</a></li>
+        <li><a href="#sum-without-parallelization">Sum without Parallelization</a></li>
+        <li><a href="#sum-with-parallelization">Sum with Parallelization</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>

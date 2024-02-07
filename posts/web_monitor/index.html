@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.38ccdf5c998a71d2ad889faefccbe9132577d265b25e73d94a1be540ebcaaa18.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/images/thicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">TechieHustle - Website Monitoring</title>
+<meta property="og:title" content=TechieHustle&#32;-&#32;Website&#32;Monitoring />
+<meta name="twitter:title" content=TechieHustle&#32;-&#32;Website&#32;Monitoring />
+<meta itemprop="name" content=TechieHustle&#32;-&#32;Website&#32;Monitoring />
+<meta name="application-name" content=TechieHustle&#32;-&#32;Website&#32;Monitoring />
+<meta property="og:site_name" content="TechieHustle" />
+
+
+<meta name="description" content="Monitoring website and notifying the site admin about downtime using cron job." />
+<meta itemprop="description" content="Monitoring website and notifying the site admin about downtime using cron job." />
+<meta property="og:description" content="Monitoring website and notifying the site admin about downtime using cron job." />
+<meta name="twitter:description" content="Monitoring website and notifying the site admin about downtime using cron job." />
+
+
+<base href="https://techiehustle-blog.github.io/posts/web_monitor/" />
+<link rel="canonical" href="https://techiehustle-blog.github.io/posts/web_monitor/" itemprop="url" />
+<meta name="url" content="https://techiehustle-blog.github.io/posts/web_monitor/" />
+<meta name="twitter:url" content="https://techiehustle-blog.github.io/posts/web_monitor/" />
+<meta property="og:url" content="https://techiehustle-blog.github.io/posts/web_monitor/" />
+
+
+<meta property="og:updated_time" content=6008-06-01T848:07:21&#43;0530 />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='https://techiehustle-blog.github.io/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+<meta name="twitter:site" content="" />
+<meta name="twitter:creator" content="" />
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="TechieHustle" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+
+
+<meta property="og:type" content="article" />
+<meta property="article:publisher" content="" />
+<meta property="og:article:published_time" content=6008-06-01T848:07:21&#43;0530 />
+<meta property="article:published_time" content=6008-06-01T848:07:21&#43;0530 />
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.3bfd04772e06f4be6e4ebd77697fda16a541f93fca95beb8b0e106b343ed6efb.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="dark-theme">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="https://techiehustle-blog.github.io/">
+                <img src="/images/avatar.jpg" alt="brand image">
+            </a>
+        
+        
+            <a href="https://techiehustle-blog.github.io/">
+                <h1>TechieHustle</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    Hi, I'm Anurag Chandra! This blog is all about different computer technologies and ideas.
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+            
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                        <li class="sub-heading">
+                            Recent
+                        </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/cpuprivilege/">CPUPrivilege</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/parallel_processing/">Parallel Processing to Reduce Processing Time</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/ecs_fargate_log_routing/">Log Routing in ECS Fargate Tasks</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/web_monitor/">Website Monitoring</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/ecs_task_tacking/">Tracking Failed ECS Tasks</a>
+                            </li>
+                        
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/TechieHustle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/anurag-c/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto://techiehustle.dev@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2024 TechieHustle. All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="https://techiehustle-blog.github.io/posts/web_monitor/">Website Monitoring</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      <time datetime=" 2021-08-06T13:48:07&#43;0530" class="post-date">
+        August 6, 2021
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>5 mins read</span>
+      </span>
+    </div>
+
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <h3 id="prologue">Prologue:</h3>
+<p>Monitoring a website for any downtime has always been crucial and it&rsquo;s even more important to get a notification of such occurences for prompt remediation actions and log such issues to analyze and avoid them in future.</p>
+<p>This post discusses about actively monitoring a website availability by sending requests to the website URL. We will be using <a href="https://docs.python.org/3.9/library/urllib.request.html#module-urllib.request" target="_blank"><code>urllib.request</code></a> module to make the request in a Python script and the script will be invoked at regular intervals via cron job.</p>
+<p>The script will be proactively checking the website availability instead of actually capturing users interactions. The proactive monitoring of the website is called <a href="https://en.wikipedia.org/wiki/Synthetic_monitoring" target="_blank">synthtic monitoring</a>. A frequencey of 10 minutes would be good enough for a site with moderate traffic. However, the frequency can be easily changed using the cron expression that we will be discussing in the upcoming sections.</p>
+<h3 id="checking-the-website">Checking the Website</h3>
+<p>Following is a basic code snippet which uses <a href="https://docs.python.org/3.9/library/urllib.request.html#urllib.request.urlopen" target="_blank"><code>request.urlopen</code></a> method to check the website:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> urllib.request <span style="color:#66d9ef">as</span> request
+
+url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://example.com&#39;</span>
+
+<span style="color:#66d9ef">try</span>:
+    responseCode <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span>urlopen(url)<span style="color:#f92672">.</span>getcode()
+<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> err:
+    logging<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#39;Could not check the website due to error: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span>, err)
+</code></pre></div><h3 id="notifying-website-admin-of-downtime">Notifying website admin of downtime</h3>
+<p>After checking the website, we can extract the response code followed by sending a notification if the response code is 5xx - showing website server has issues. There can be numerous ways to notify the admin; for example you can leverage AWS services like <a href="https://docs.aws.amazon.com/ses/latest/dg/Welcome.html" target="_blank">AWS SES</a> or <a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html" target="_blank">AWS SNS</a> or other providers like <a href="https://onesignal.com/" target="_blank">One Signal</a> and <a href="https://pushnami.com/" target="_blank">Pushnami</a>. However, in this post, we are going to use a very basic <a href="https://docs.python.org/3/library/smtplib.html#module-smtplib" target="_blank">smtplib</a> module in this post.</p>
+<p>The following snippet gives an idea of sending mail using <a href="https://docs.python.org/3/library/smtplib.html#module-smtplib" target="_blank">smtplib</a> with <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP_SSL" target="_blank"><code>SMTP_SSL</code></a> class.</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> smtplib
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sendMail</span>():
+    emailId <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;sender-mail-id&#39;</span>
+    emailPassword <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;LoginPassword&#39;</span>
+
+    sentFrom <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Web Monitor&#34;</span>
+    to <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;reciever1-emailId&#39;</span>, <span style="color:#e6db74">&#39;reciever2-emailId&#39;</span>] 
+    subject <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;A test mail&#39;</span>
+    body <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Website Monitoring demo&#39;</span>
+
+    emailText <span style="color:#f92672">=</span> (
+        <span style="color:#e6db74">&#34;From: </span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#e6db74">&#34;To: </span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#e6db74">&#34;Subject: </span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#f92672">%</span> (sentFrom, <span style="color:#e6db74">&#34;, &#34;</span><span style="color:#f92672">.</span>join(to), subject, body))
+
+    <span style="color:#66d9ef">try</span>: 
+        <span style="color:#75715e">#Create your SMTP session</span>
+        smtp <span style="color:#f92672">=</span> smtplib<span style="color:#f92672">.</span>SMTP_SSL(<span style="color:#e6db74">&#39;smtp.gmail.com&#39;</span>, <span style="color:#ae81ff">465</span>) 
+
+        <span style="color:#75715e">#User Authentication</span>
+        smtp<span style="color:#f92672">.</span>login(emailId,emailPassword)
+        
+        <span style="color:#75715e">#Sending the Email</span>
+        smtp<span style="color:#f92672">.</span>sendmail(sentFrom, to, emailText) 
+
+        <span style="color:#75715e">#Terminating the session </span>
+        smtp<span style="color:#f92672">.</span>quit() 
+        print(<span style="color:#e6db74">&#39;Email sent successfully!&#39;</span>)
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> err:
+        print(<span style="color:#e6db74">&#39;Failed to send Email due to </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span>, err)
+</code></pre></div><blockquote>
+<p><strong>Extra Shots on Secured SMTP Connections</strong><br>
+In the above snippet, the SMTP connection is created with SSL, so it&rsquo;s encrypted from the begining. The <a href="https://docs.python.org/3/library/smtplib.html#module-smtplib" target="_blank">smtplib</a> module provides another method <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls" target="_blank"><code>SMTP.starttls</code></a>, but it first creates the conncetion using <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" target="_blank"><code>smtplib.SMTP</code></a> and uses <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls" target="_blank"><code>SMTP.starttls</code></a> to apply SSL on the connection. So, <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP_SSL" target="_blank"><code>SMTP_SSL</code></a> class is preferred for secured SMTP connections.</p>
+</blockquote>
+<h3 id="logging-for-future-root-cause-analysis">Logging for future Root Cause Analysis</h3>
+<p>Notifying the website admins will help in getting back the site available faster, but it&rsquo;s important that we log such incidents so that a thorough investigation can be done later to find the root cause and avoid such issues in future.</p>
+<p>We will be using <a href="https://docs.python.org/3/library/logging.html" target="_blank">logging</a> module which can be used to log the 5XX responses from the website. By default, the logging module prints the logging content on the console. However, we can specify a file using <a href="https://docs.python.org/3/library/logging.html#logging.basicConfig" target="_blank">basicConfig</a> module which will be used for logging.</p>
+<p>Following snippet shows how to set the logging file. Here, the path of the logging will be relative to the script path.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> logging 
+
+<span style="color:#75715e"># Setting logging configuration</span>
+logging<span style="color:#f92672">.</span>basicConfig(level<span style="color:#f92672">=</span>logging<span style="color:#f92672">.</span>DEBUG, filename<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pathToLogFile.log&#39;</span>, \
+    filemode<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;a&#39;</span>, format<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%(asctime)s</span><span style="color:#e6db74"> </span><span style="color:#e6db74">%(levelname)s</span><span style="color:#e6db74"> </span><span style="color:#e6db74">%(message)s</span><span style="color:#e6db74">&#39;</span>)
+
+logging<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#39;Logging at Information level.&#39;</span>)
+
+<span style="color:#75715e"># Lodding in the logfile: 2021-07-20 13:00:31,354 INFO Logging at Information level.</span>
+</code></pre></div><p>Logging tutorials can be found at <a href="https://docs.python.org/3/howto/logging.html#logging-basic-tutorial" target="_blank">basic</a> and <a href="https://docs.python.org/3/howto/logging.html#logging-advanced-tutorial" target="_blank">advanced</a> tutorials.</p>
+<h3 id="tying-all-together">Tying all together</h3>
+<p>Using all the above discussed sections, we can <a href="https://en.wikipedia.org/wiki/Synthetic_monitoring" target="_blank">synthtic monitoring</a> of a website, notify website admin and log for issues' future analysis and I had tested it using following script.</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> logging 
+<span style="color:#f92672">import</span> urllib.request <span style="color:#66d9ef">as</span> request
+<span style="color:#f92672">import</span> smtplib
+
+<span style="color:#75715e"># Setting logging configuration</span>
+logging<span style="color:#f92672">.</span>basicConfig(level<span style="color:#f92672">=</span>logging<span style="color:#f92672">.</span>DEBUG, filename<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pathToLogFile.log&#39;</span>, \
+    filemode<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;a&#39;</span>, format<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%(asctime)s</span><span style="color:#e6db74"> </span><span style="color:#e6db74">%(levelname)s</span><span style="color:#e6db74"> </span><span style="color:#e6db74">%(message)s</span><span style="color:#e6db74">&#39;</span>)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sendMail</span>(responseCode):
+    emailId <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;sender emailId&#39;</span>
+    emailPassword <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;sender email login password&#39;</span>
+
+    sentFrom <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Web Monitor&#34;</span>
+    to <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;web-admin-email-id-group&#39;</span>, <span style="color:#e6db74">&#39;operations-team-email-id-group&#39;</span>] 
+    subject <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;WARNING! Website down!&#39;</span>
+    body <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Website is down!! Response Code: &#39;</span>, responseCode
+
+    emailText <span style="color:#f92672">=</span> (
+        <span style="color:#e6db74">&#34;From: </span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#e6db74">&#34;To: </span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#e6db74">&#34;Subject: </span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;</span>
+        <span style="color:#f92672">%</span> (sentFrom, <span style="color:#e6db74">&#34;, &#34;</span><span style="color:#f92672">.</span>join(to), subject, body))
+
+    logging<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#39;Sending mail to the website admin and operations team.&#39;</span>)
+    <span style="color:#66d9ef">try</span>: 
+        <span style="color:#75715e">#Create your SMTP session</span>
+        smtp <span style="color:#f92672">=</span> smtplib<span style="color:#f92672">.</span>SMTP_SSL(<span style="color:#e6db74">&#39;smtp.gmail.com&#39;</span>, <span style="color:#ae81ff">465</span>) 
+
+        <span style="color:#75715e">#User Authentication</span>
+        smtp<span style="color:#f92672">.</span>login(emailId,emailPassword)
+        
+        <span style="color:#75715e">#Sending the Email</span>
+        smtp<span style="color:#f92672">.</span>sendmail(sentFrom, to, emailText) 
+
+        <span style="color:#75715e">#Terminating the session </span>
+        smtp<span style="color:#f92672">.</span>quit() 
+        logging<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#39;Email sent successfully!&#39;</span>) 
+
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> err:
+        logging<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#39;Failed to send Email due to </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span>, err)
+
+
+<span style="color:#75715e"># Check if the website is available</span>
+url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://techiehustle.com&#39;</span>
+
+<span style="color:#66d9ef">try</span>:
+    logging<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#39;Reaching the website </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span>, url)
+    responseCode <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span>urlopen(url)<span style="color:#f92672">.</span>getcode()
+    <span style="color:#66d9ef">if</span> responseCode <span style="color:#f92672">in</span> [<span style="color:#ae81ff">500</span>, <span style="color:#ae81ff">501</span>, <span style="color:#ae81ff">502</span>, <span style="color:#ae81ff">503</span>, <span style="color:#ae81ff">504</span>]:
+        logging<span style="color:#f92672">.</span>warning(<span style="color:#e6db74">&#39;Website DOWN!!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">Response Code received = </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span>, responseCode)
+        logging<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#39;Notifying website admin and Operations team.&#39;</span>)
+        sendMail(responseCode)
+<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> err:
+    logging<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#39;Could not check the website due to error: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span>, err)
+</code></pre></div><p><strong>Note:</strong> The above script logs and notifies only for the common server-side 5XX responses.</p>
+<h3 id="cron-job-to-invoke-the-script">Cron job to invoke the script</h3>
+<p>We have reached at the last step of creating cron job which will be triggered every 10 minutes. On Linux machines, make sure that the crond service is running using command <code>$ service crond status</code> and command <code>$ service crond start</code> can be used to run crond. If cron is not installed, it can be installed using:</p>
+<ul>
+<li>
+<p>CentOS/RHEL: <code>$ sudo yum install cronie</code></p>
+</li>
+<li>
+<p>Debian/Ubuntu: <code>$ sudo apt-get install cron</code></p>
+</li>
+</ul>
+<p>Then a cron job can be created using <code>crontab -e</code> command and following in the file.</p>
+<p><code>*/10 * * * * python3 /relativePathOfPythonScript/webMonitor.py</code></p>
+<p>The frequency of the cron job can be set by changing the cron expression in the above command. You can find cron expressions with the help of <a href="https://crontab.guru/#*/10_*_*_*_*" target="_blank">this</a> site.</p>
+<p>In case of Windows machine, we can use <a href="https://docs.microsoft.com/en-us/powershell/module/psscheduledjob/register-scheduledjob?view=powershell-5.1" target="_blank">Register-ScheduledJob</a> with <code>RunEvery</code> flag to specify the frequency.</p>
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="https://techiehustle-blog.github.io/posts/ecs_task_tacking/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Tracking Failed ECS Tasks</a>
+        
+	    
+            <div class="next-post">
+                <a href="https://techiehustle-blog.github.io/posts/ecs_fargate_log_routing/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Log Routing in ECS Fargate Tasks</a>
+            </div>
+        
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#prologue">Prologue:</a></li>
+        <li><a href="#checking-the-website">Checking the Website</a></li>
+        <li><a href="#notifying-website-admin-of-downtime">Notifying website admin of downtime</a></li>
+        <li><a href="#logging-for-future-root-cause-analysis">Logging for future Root Cause Analysis</a></li>
+        <li><a href="#tying-all-together">Tying all together</a></li>
+        <li><a href="#cron-job-to-invoke-the-script">Cron job to invoke the script</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.38ccdf5c998a71d2ad889faefccbe9132577d265b25e73d94a1be540ebcaaa18.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/images/thicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">TechieHustle - Tracking Failed ECS Tasks</title>
+<meta property="og:title" content=TechieHustle&#32;-&#32;Tracking&#32;Failed&#32;ECS&#32;Tasks />
+<meta name="twitter:title" content=TechieHustle&#32;-&#32;Tracking&#32;Failed&#32;ECS&#32;Tasks />
+<meta itemprop="name" content=TechieHustle&#32;-&#32;Tracking&#32;Failed&#32;ECS&#32;Tasks />
+<meta name="application-name" content=TechieHustle&#32;-&#32;Tracking&#32;Failed&#32;ECS&#32;Tasks />
+<meta property="og:site_name" content="TechieHustle" />
+
+
+<meta name="description" content="Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis." />
+<meta itemprop="description" content="Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis." />
+<meta property="og:description" content="Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis." />
+<meta name="twitter:description" content="Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis." />
+
+
+<base href="https://techiehustle-blog.github.io/posts/ecs_task_tacking/" />
+<link rel="canonical" href="https://techiehustle-blog.github.io/posts/ecs_task_tacking/" itemprop="url" />
+<meta name="url" content="https://techiehustle-blog.github.io/posts/ecs_task_tacking/" />
+<meta name="twitter:url" content="https://techiehustle-blog.github.io/posts/ecs_task_tacking/" />
+<meta property="og:url" content="https://techiehustle-blog.github.io/posts/ecs_task_tacking/" />
+
+
+<meta property="og:updated_time" content=8005-08-07T511:54:21&#43;0530 />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='https://techiehustle-blog.github.io/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+<meta name="twitter:site" content="" />
+<meta name="twitter:creator" content="" />
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="TechieHustle" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+
+
+<meta property="og:type" content="article" />
+<meta property="article:publisher" content="" />
+<meta property="og:article:published_time" content=8005-08-07T511:54:21&#43;0530 />
+<meta property="article:published_time" content=8005-08-07T511:54:21&#43;0530 />
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.3bfd04772e06f4be6e4ebd77697fda16a541f93fca95beb8b0e106b343ed6efb.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="dark-theme">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="https://techiehustle-blog.github.io/">
+                <img src="/images/avatar.jpg" alt="brand image">
+            </a>
+        
+        
+            <a href="https://techiehustle-blog.github.io/">
+                <h1>TechieHustle</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    Hi, I'm Anurag Chandra! This blog is all about different computer technologies and ideas.
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+            
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                        <li class="sub-heading">
+                            Recent
+                        </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/cpuprivilege/">CPUPrivilege</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/parallel_processing/">Parallel Processing to Reduce Processing Time</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/ecs_fargate_log_routing/">Log Routing in ECS Fargate Tasks</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/web_monitor/">Website Monitoring</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="https://techiehustle-blog.github.io/posts/ecs_task_tacking/">Tracking Failed ECS Tasks</a>
+                            </li>
+                        
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/TechieHustle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/anurag-c/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto://techiehustle.dev@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2024 TechieHustle. All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="https://techiehustle-blog.github.io/posts/ecs_task_tacking/">Tracking Failed ECS Tasks</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      <time datetime=" 2021-05-08T19:11:54&#43;0530" class="post-date">
+        May 8, 2021
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>6 mins read</span>
+      </span>
+    </div>
+
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <h3 id="prologue">Prologue</h3>
+<p>Many times we have ECS tasks which fail either while launching or later. In production environments, it becomes extremely crucial to keep a track of tasks failing. If we can find identify such failing tasks, we can perform Root Cause Analysis (RCA) and address many issues which can prevent such failures in future, making the production more resilient.</p>
+<p>Although, tasks running as part of an ECS service, are logged in service events, but not much detail is included in the events and in some cases the task stopped reasons too are not included. Also, the service events logs service specific task details and can log as many as 100 events, so it’s likely that older failed task details are not available. So it can be challenging to keep a track of such tasks, as ECS does not provide a direct console to check failed tasks, especially if the production environment has large number of tasks; and makes RCA &amp; issue addressal further tricky. In this post, we are going to circumvent this limitation.</p>
+<p>Fortunately, we have <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html" target="_blank">Amazon EventBridge</a> service which can be useful to address this issue. Now, a detailed reading and working can be found in the official <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html" target="_blank">Amazon EventBridge</a> documentation. However, succinctly put: Amazon EventBridge enables various AWS services to send events (with some payload) to the <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus.html" target="_blank">EventBridge event buses</a>, EventBridge evaluates the event payloads and in-turn decides to trigger different target AWS services forwarding the payload. So, as the name suggests, it acts as a bridge between different AWS services, receiving events and triggering targets.</p>
+<p>Before we move further, if you new to EventBridge, I highly recommend to get familiar with EventBridge using <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-get-started.html#eb-gs-create-rule" target="_blank">Getting Started guide</a> from official AWS documentation.</p>
+<h3 id="event-rules">Event Rules:</h3>
+<p>An event rule matches the incoming events with <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html" target="_blank">event pattern</a> and determines whether or not to trigger the targets based on the result if the event pattern matches or not with the events. <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_cwe_events.html" target="_blank">ECS events</a>  are created in one of the three cases: container instance state change events, task state change events, and service action events. This post will be focusing primarily on task state events as the failures relate to the tasks use task state events.</p>
+<p>ECS task state creates events in any one of the cases when a task is started/sopped via an ECS service or independently using <code>RunTask</code>/<code>StartTask</code> or <code>StopTask</code> API call; task launch fails; container in the task changes state. In each of the cases of task state events, the event has a unique set of key-value pairs which can be used in an event pattern to identify tasks with issues with fine grain control on tasks belonging to a specific ECS cluster and/or ECS service within the cluster.</p>
+<h3 id="event-patterns">Event Patterns:</h3>
+<p>This section henceforth, we are going through examples of different event patterns to capture task events with specific issues.</p>
+<p>Here is a sample ECS task event when container exited with exit code 127:</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;0&#34;</span>,
+  <span style="color:#f92672">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&#34;</span>,
+  <span style="color:#f92672">&#34;detail-type&#34;</span>:<span style="color:#e6db74">&#34;ECS Task State Change&#34;</span>,
+  <span style="color:#f92672">&#34;source&#34;</span>:<span style="color:#e6db74">&#34;aws.ecs&#34;</span>,
+  <span style="color:#f92672">&#34;account&#34;</span>:<span style="color:#e6db74">&#34;xxxxxxxxxxxx&#34;</span>,
+  <span style="color:#f92672">&#34;time&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:58:12Z&#34;</span>,
+  <span style="color:#f92672">&#34;region&#34;</span>:<span style="color:#e6db74">&#34;us-east-1&#34;</span>,
+  <span style="color:#f92672">&#34;resources&#34;</span>:[<span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task/default/xxxxxxxxxxxxxxxxxxxxxxxx&#34;</span>],
+  <span style="color:#f92672">&#34;detail&#34;</span>:{
+    <span style="color:#f92672">&#34;clusterArn&#34;</span>:<span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:cluster/default&#34;</span>,
+    <span style="color:#f92672">&#34;connectivity&#34;</span>:<span style="color:#e6db74">&#34;CONNECTED&#34;</span>,
+    <span style="color:#f92672">&#34;connectivityAt&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:57:37.852Z&#34;</span>,
+    <span style="color:#f92672">&#34;containers&#34;</span>:[{
+      <span style="color:#f92672">&#34;containerArn&#34;</span>:<span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:container/default/xxxxxxxxxxxxxxxxxxxxxxxx/xxxxxx-xx-xx-xxxxxx&#34;</span>,
+      <span style="color:#f92672">&#34;exitCode&#34;</span>:<span style="color:#ae81ff">127</span>,
+      <span style="color:#f92672">&#34;lastStatus&#34;</span>:<span style="color:#e6db74">&#34;STOPPED&#34;</span>,
+      <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;Nginx-Container&#34;</span>,
+      <span style="color:#f92672">&#34;image&#34;</span>:<span style="color:#e6db74">&#34;nginx&#34;</span>,
+      <span style="color:#f92672">&#34;runtimeId&#34;</span>:<span style="color:#e6db74">&#34;xxxxxxxxxxxxxxxxxxxxxxxx-2065566309&#34;</span>,
+      <span style="color:#f92672">&#34;taskArn&#34;</span>:<span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task/default/xxxxxxxxxxxxxxxxxxxxxxxx&#34;</span>,
+      <span style="color:#f92672">&#34;networkInterfaces&#34;</span>:
+        [{
+          <span style="color:#f92672">&#34;attachmentId&#34;</span>:<span style="color:#e6db74">&#34;xxxxxx-xx-xx-xx-xxxxxx-xxxxxxxxx&#34;</span>,
+          <span style="color:#f92672">&#34;privateIpv4Address&#34;</span>:<span style="color:#e6db74">&#34;172.31.78.62&#34;</span>,
+          <span style="color:#f92672">&#34;ipv6Address&#34;</span>:<span style="color:#e6db74">&#34;xxxx:xxxx:xxx:fd00:84d4:xxx:xx:xxxx&#34;</span>
+        }],
+      <span style="color:#f92672">&#34;cpu&#34;</span>:<span style="color:#e6db74">&#34;0&#34;</span>
+    }],
+    <span style="color:#f92672">&#34;cpu&#34;</span>:<span style="color:#e6db74">&#34;256&#34;</span>,
+    <span style="color:#f92672">&#34;createdAt&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:57:33.528Z&#34;</span>,
+    <span style="color:#f92672">&#34;desiredStatus&#34;</span>:<span style="color:#e6db74">&#34;STOPPED&#34;</span>,
+    <span style="color:#f92672">&#34;enableExecuteCommand&#34;</span>:<span style="color:#66d9ef">false</span>,
+    <span style="color:#f92672">&#34;ephemeralStorage&#34;</span>:{<span style="color:#f92672">&#34;sizeInGiB&#34;</span>:<span style="color:#ae81ff">20</span>},
+    <span style="color:#f92672">&#34;executionStoppedAt&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:58:02.463Z&#34;</span>,
+    <span style="color:#f92672">&#34;group&#34;</span>:<span style="color:#e6db74">&#34;family:test-task-definition&#34;</span>,
+    <span style="color:#f92672">&#34;launchType&#34;</span>:<span style="color:#e6db74">&#34;FARGATE&#34;</span>,
+    <span style="color:#f92672">&#34;lastStatus&#34;</span>:<span style="color:#e6db74">&#34;DEPROVISIONING&#34;</span>,
+    <span style="color:#f92672">&#34;memory&#34;</span>:<span style="color:#e6db74">&#34;512&#34;</span>,
+    <span style="color:#f92672">&#34;overrides&#34;</span>:{
+      <span style="color:#f92672">&#34;containerOverrides&#34;</span>:[{<span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;Nginx-Container&#34;</span>}]
+    },
+    <span style="color:#f92672">&#34;platformVersion&#34;</span>:<span style="color:#e6db74">&#34;1.4.0&#34;</span>,
+    <span style="color:#f92672">&#34;pullStartedAt&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:57:47.724Z&#34;</span>,
+    <span style="color:#f92672">&#34;pullStoppedAt&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:57:59.522Z&#34;</span>,
+    <span style="color:#f92672">&#34;startedAt&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:58:02.494Z&#34;</span>,
+    <span style="color:#f92672">&#34;stoppingAt&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:58:12.541Z&#34;</span>,
+    <span style="color:#f92672">&#34;stoppedReason&#34;</span>:<span style="color:#e6db74">&#34;Essential container in task exited&#34;</span>,
+    <span style="color:#f92672">&#34;stopCode&#34;</span>:<span style="color:#e6db74">&#34;EssentialContainerExited&#34;</span>,
+    <span style="color:#f92672">&#34;taskArn&#34;</span>:<span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task/default/xxxxxxxxxxxxxxxxxxxxxxxx&#34;</span>,
+    <span style="color:#f92672">&#34;taskDefinitionArn&#34;</span>:<span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task-definition/test-task-definition:8&#34;</span>,
+    <span style="color:#f92672">&#34;updatedAt&#34;</span>:<span style="color:#e6db74">&#34;2021-05-08T11:58:12.541Z&#34;</span>,
+    <span style="color:#f92672">&#34;version&#34;</span>:<span style="color:#ae81ff">4</span>
+    }
+}
+</code></pre></div><h3 id="task-failed-to-start-issues">Task failed to start issues:</h3>
+<p>Such issues happen when the task fails to start. This usually happens when there is a problem in task configurations which can cause issues in launching the containers. For example, the task does not have permissions to pull the container image or secrets from secrets manager used in container environment variables; or has incorrect network configurations due to which image could not be pulled; or there is no host instance in cluster to accommodate the task. There are plethora of reasons which could lead to task start failure.</p>
+<p>Following event pattern can be used to capture such tasks which failed to start:</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;source&#34;</span>: [
+    <span style="color:#e6db74">&#34;aws.ecs&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;detail-type&#34;</span>: [
+    <span style="color:#e6db74">&#34;ECS Task State Change&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;detail&#34;</span>: {
+    <span style="color:#f92672">&#34;clusterArn&#34;</span>: [
+      <span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:cluster/clusterName&#34;</span>
+    ],
+    <span style="color:#f92672">&#34;stopCode&#34;</span>: [
+      <span style="color:#e6db74">&#34;TaskFailedToStart&#34;</span>
+    ]
+  }
+}
+</code></pre></div><h3 id="task-failed-due-application-issue">Task failed due application issue</h3>
+<p>In this case, the task starts but the eventually stops due to some issue in the essential container application.</p>
+<p>Note: An ECS task can run as many as 10 containers as per the <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-quotas.html#service-quotas-ecs" target="_blank">ECS default quotas</a>. However, the task stops due to a stopping of a container only if the container is labeled as <a href="https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ContainerDefinition.html" target="_blank">Essential</a>, otherwise the task can be in running state even for a stopped non-essential container.</p>
+<p>If there is a container exits due to a command failure, it exits with a non-zero exit code and if the container is essential, it will stop the task as well. In such case, the event can be captured using following event pattern:</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;source&#34;</span>: [
+    <span style="color:#e6db74">&#34;aws.ecs&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;detail-type&#34;</span>: [
+    <span style="color:#e6db74">&#34;ECS Task State Change&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;detail&#34;</span>: {
+    <span style="color:#f92672">&#34;clusterArn&#34;</span>: [
+      <span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:cluster/clusterName&#34;</span>
+    ],
+    <span style="color:#f92672">&#34;containers&#34;</span>: {
+      <span style="color:#f92672">&#34;exitCode&#34;</span>: [{
+        <span style="color:#f92672">&#34;anything-but&#34;</span>: [<span style="color:#ae81ff">0</span>]
+      }]
+    },
+    <span style="color:#f92672">&#34;stopCode&#34;</span>: [
+      <span style="color:#e6db74">&#34;EssentialContainerExited&#34;</span>
+    ]
+  }
+}
+</code></pre></div><p><strong>Note</strong>: The above pattern will be able to capture non-zero exit codes from essential containers in the task which belong to cluster bearing name “clusterName”. While using the pattern, use your cluster’s ARN.</p>
+<h3 id="task-failures-within-an-ecs-service">Task failures within an ECS service</h3>
+<p>This section delves into cornering tasks which fail within an ECS service. Here, it is worth noting that the event patterns we have discussed so far are applicable to the tasks of ECS service as well, as the tasks of an ECS service have same <code>stopCode</code> &amp; <code>exitCode</code>. However, as ECS services are logical isolation of microservices, it is worth sparing our time to discuss about tracking failing tasks with their service names.</p>
+<p>For service name specific event pattern, we can use all the above discussed event patterns with an additional key “group” in the event pattern. Following event pattern can be used by specifying the <code>clusterArn</code> and ECS service name in <code>service:&lt;your-service-name&gt;</code> (replace “<!-- raw HTML omitted -->” with ECS service name):</p>
+<div class="highlight line-numbers"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;source&#34;</span>: [
+    <span style="color:#e6db74">&#34;aws.ecs&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;detail-type&#34;</span>: [
+    <span style="color:#e6db74">&#34;ECS Task State Change&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;detail&#34;</span>: {
+    <span style="color:#f92672">&#34;clusterArn&#34;</span>: [
+      <span style="color:#e6db74">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:cluster/clusterName&#34;</span>
+    ],
+    <span style="color:#f92672">&#34;group&#34;</span>: [
+      <span style="color:#e6db74">&#34;service:&lt;your-service-name&gt;&#34;</span>
+    ],
+    <span style="color:#f92672">&#34;stopCode&#34;</span>: [
+      <span style="color:#e6db74">&#34;TaskFailedToStart&#34;</span>
+    ]
+  }
+}
+</code></pre></div><h3 id="targets">Targets</h3>
+<p>In essence, <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html" target="_blank">targets</a> are AWS services/endpoints to which event payload is sent upon a successful event match with the event pattern. For each event rule, there can be a maximum of 5 targets. You can log the events for failing tasks for a later RCA, or use SNS topic to get an alert, say your email subscribed to the topic, or you can trigger a different service as fail-safe mechanism.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>At this point it’s easy to see that there can be different ways in which we can log and trace failing ECS tasks and it can make troubleshooting easier and systematic. A further exploration of events and events pattern is worth sweating. You can keep the event pattern so as to match with a wider range of events using lesser filter and try to find patterns for your use-cases. For example, in ECS, following pattern will capture all the events from ECS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;source&#34;</span>: [
+    <span style="color:#e6db74">&#34;aws.ecs&#34;</span>
+  ]
+}
+</code></pre></div><p>The captured events can be used to contrive different patterns according to the need.</p>
+  
+  <hr>
+<div class="footer">
+    
+	    
+	    
+            <div class="next-post">
+                <a href="https://techiehustle-blog.github.io/posts/web_monitor/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Website Monitoring</a>
+            </div>
+        
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#prologue">Prologue</a></li>
+        <li><a href="#event-rules">Event Rules:</a></li>
+        <li><a href="#event-patterns">Event Patterns:</a></li>
+        <li><a href="#task-failed-to-start-issues">Task failed to start issues:</a></li>
+        <li><a href="#task-failed-due-application-issue">Task failed due application issue</a></li>
+        <li><a href="#task-failures-within-an-ecs-service">Task failures within an ECS service</a></li>
+        <li><a href="#targets">Targets</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>
