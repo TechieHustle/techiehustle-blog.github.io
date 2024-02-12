@@ -2,35 +2,35 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://techiehustle.dev/about/</loc>
+    <loc>https://techiehustle.com/about/</loc>
     <lastmod>2024-02-06T23:19:05-05:00</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/about/about_me/</loc>
+    <loc>https://techiehustle.com/about/about_me/</loc>
     <lastmod>2024-02-06T23:19:05-05:00</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/</loc>
+    <loc>https://techiehustle.com/</loc>
     <lastmod>2024-02-06T23:19:05-05:00</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/posts/cpuprivilege/</loc>
+    <loc>https://techiehustle.com/posts/cpuprivilege/</loc>
     <lastmod>2022-01-04T23:41:13+05:30</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/posts/</loc>
+    <loc>https://techiehustle.com/posts/</loc>
     <lastmod>2022-01-04T23:41:13+05:30</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/posts/parallel_processing/</loc>
+    <loc>https://techiehustle.com/posts/parallel_processing/</loc>
     <lastmod>2021-09-23T22:03:58+05:30</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/posts/ecs_fargate_log_routing/</loc>
+    <loc>https://techiehustle.com/posts/ecs_fargate_log_routing/</loc>
     <lastmod>2021-08-31T13:59:39+05:30</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/posts/web_monitor/</loc>
+    <loc>https://techiehustle.com/posts/web_monitor/</loc>
     <lastmod>2021-08-06T13:48:07+05:30</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/posts/ecs_task_tacking/</loc>
+    <loc>https://techiehustle.com/posts/ecs_task_tacking/</loc>
     <lastmod>2021-05-08T19:11:54+05:30</lastmod>
   </url><url>
-    <loc>https://techiehustle.dev/series/</loc>
+    <loc>https://techiehustle.com/series/</loc>
   </url><url>
-    <loc>https://techiehustle.dev/tags/</loc>
+    <loc>https://techiehustle.com/tags/</loc>
   </url>
 </urlset>
